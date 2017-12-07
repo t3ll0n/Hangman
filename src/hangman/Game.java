@@ -1,8 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+//Authors: Johann Redhead and Tellon Smith
+//Professor: Dr. Tina Johnson
+//Course: CMPS 4143
+//Date: 12/4/17
+//Program: this program simulates the game of hangman in which the user is allowed to guess the letters of a word to be found
+
 package hangman;
 
 import java.awt.Color;
@@ -21,7 +22,7 @@ import javax.swing.JTextField;
 public class Game extends javax.swing.JFrame {
     //variables
     Hangman hangman = new Hangman();
-    String fileName = "words.txt";
+    String fileName = "words.txt"; //text file containing words for game
     String icon = ".\\src\\hangman\\images\\icon.png";
 
     /**
@@ -576,14 +577,15 @@ public class Game extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    //function initialized textboxes and images to the appropriate starting values
     private void start_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start_buttonActionPerformed
         start_button.setText("New Game");
         hangman.initializeHangman(fileName);
-        word_textfield.setText(hangman.getGameWord());
+        word_textfield.setText(hangman.getGameWord()); //draws '_' = to the length of the word
         resetControls();
-        ImageIcon hangmanPic = new ImageIcon(".\\src\\hangman\\images\\"+hangman.getTriesLeft()+".png");
-        hangman_label.setIcon(hangmanPic);;
+        ImageIcon hangmanPic = new ImageIcon(".\\src\\hangman\\images\\"+hangman.getTriesLeft()+".png"); //draws the hanging post image as the first image
+        hangman_label.setIcon(hangmanPic); //java has no picturebox, so set image as background of label
         score_label.setText("Score: "+ hangman.getScore());
         bestScore_label.setText("Best: "+ hangman.getBestScore());
         triesLeft_label.setText("Tries Left: "+ hangman.getTriesLeft());
@@ -705,10 +707,12 @@ public class Game extends javax.swing.JFrame {
         processInput('z', this.z_button);
     }//GEN-LAST:event_z_buttonActionPerformed
 
+    //function checks to see if user-guessed word matches 
     private void guessWord_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guessWord_buttonActionPerformed
+        //if it matches
         if (hangman.checkGuessWord(guessWord_textfield.getText()))
         {
-           hangman.setWinner(true);
+           hangman.setWinner(true); //set game state to a win, changes appropriate value and start a new game
            word_textfield.setText(hangman.getAnswer());
            JOptionPane.showMessageDialog(null, "Correct!", "", JOptionPane.PLAIN_MESSAGE);             
            hangman.updateScores();
@@ -721,12 +725,15 @@ public class Game extends javax.swing.JFrame {
         else if (hangman.getTriesLeft() != 1)
         {
             hangman.decrementChancesLeft();
-            ImageIcon hangmanPic = new ImageIcon(".\\src\\hangman\\images\\"+hangman.getTriesLeft()+".png");
+            
+            //draw appropriate image based on number of tries consumed, appends a limb to the 'man' for each incorrect attempt
+            ImageIcon hangmanPic = new ImageIcon(".\\src\\hangman\\images\\"+hangman.getTriesLeft()+".png"); 
+            
             hangman_label.setIcon(hangmanPic);;
             JOptionPane.showMessageDialog(null, "Wrong!", "", JOptionPane.PLAIN_MESSAGE);
             guessWord_textfield.setText("");
         }
-        else
+        else //all tries consumed, player loses the game
         {   
             JOptionPane.showMessageDialog(null, "Wrong!", "", JOptionPane.PLAIN_MESSAGE);
             word_textfield.setText(hangman.getAnswer());
@@ -779,11 +786,11 @@ public class Game extends javax.swing.JFrame {
     
     protected void processInput(char guessLetter, JButton button)
     {
-        button.setEnabled(false);
-        if (hangman.checkGuessLetter(guessLetter))
+        button.setEnabled(false); //disable buttons so it can't be selected as another guess
+        if (hangman.checkGuessLetter(guessLetter)) //check to see if letter is part of the word to be guessed
         {
-            hangman.updateGameWord(guessLetter);
-            if (hangman.checkGameWord())
+            hangman.updateGameWord(guessLetter); //adds the letter the user guessed to the textfield
+            if (hangman.checkGameWord()) //checks to see if new word matches the word to be guessed
             {                
                 hangman.setWinner(true);
                 word_textfield.setText(hangman.getAnswer());
@@ -795,20 +802,20 @@ public class Game extends javax.swing.JFrame {
                 word_textfield.setText(hangman.getGameWord());
                 resetControls();
             }
-            else
+            else //if word doesn't match yet, update the player score
             {
                 word_textfield.setText(hangman.getGameWord());
                 hangman.updateScores();
             }
         }
-        else if (hangman.getTriesLeft() != 1)
+        else if (hangman.getTriesLeft() != 1) //if no match, decerement tries and add new limb to the man
         {
             hangman.decrementChancesLeft();
             ImageIcon hangmanPic = new ImageIcon(".\\src\\hangman\\images\\"+hangman.getTriesLeft()+".png");
             hangman_label.setIcon(hangmanPic);;
             button.setForeground(Color.red);            
         }
-        else
+        else //user consumed all their tries, display the word they were guessing and end the game
         {            
             word_textfield.setText(hangman.getAnswer());
             hangman.decrementChancesLeft();
